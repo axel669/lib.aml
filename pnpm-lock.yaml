@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@axel669/proteus': ^0.1.7
+  '@preact/signals': ^1.1.4
   '@rollup/plugin-commonjs': ^25.0.2
   '@rollup/plugin-node-resolve': ^15.1.0
   '@rollup/plugin-terser': ^0.4.3
@@ -11,6 +12,7 @@ specifiers:
 
 devDependencies:
   '@axel669/proteus': 0.1.7
+  '@preact/signals': 1.1.4_preact@10.15.1
   '@rollup/plugin-commonjs': 25.0.2_rollup@3.26.0
   '@rollup/plugin-node-resolve': 15.1.0_rollup@3.26.0
   '@rollup/plugin-terser': 0.4.3_rollup@3.26.0
@@ -63,6 +65,19 @@ packages:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.0
       '@jridgewell/sourcemap-codec': 1.4.14
+    dev: true
+
+  /@preact/signals-core/1.3.1:
+    resolution: {integrity: sha512-DL+3kDssZ3UOMz9HufwSYE/gK0+TnT1jzegfF5rstgyPrnyfjz4BHAoxmzQA6Mkp4UlKe8qjsgl3v5a/obzNig==}
+    dev: true
+
+  /@preact/signals/1.1.4_preact@10.15.1:
+    resolution: {integrity: sha512-4s0U8yHfy6OzBjTx8lgG0JZGFq1y+ye7xLmaaI8SXyJ5p+jAtMKW40Mg3GDLISM5WyKnqbfrQ4SOmbq1VTBtTw==}
+    peerDependencies:
+      preact: 10.x
+    dependencies:
+      '@preact/signals-core': 1.3.1
+      preact: 10.15.1
     dev: true
 
   /@rollup/plugin-commonjs/25.0.2_rollup@3.26.0:
