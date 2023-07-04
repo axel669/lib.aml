@@ -29,5 +29,15 @@ export default [
             commonjs(),
             terser()
         ]
+    },
+    {
+        input: "lib/browser.mjs",
+        output: {
+            file: "dist/browser.min.mjs",
+            format: "esm"
+        },
+        plugins: [
+            terser()
+        ]
     }
 ]
