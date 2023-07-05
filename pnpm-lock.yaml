@@ -1,7 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@axel669/proteus': ^0.1.7
+  '@axel669/proteus': ^0.1.8
   '@preact/signals': ^1.1.4
   '@rollup/plugin-commonjs': ^25.0.2
   '@rollup/plugin-node-resolve': ^15.1.0
@@ -11,7 +11,7 @@ specifiers:
   rollup: ^3.26.0
 
 devDependencies:
-  '@axel669/proteus': 0.1.7
+  '@axel669/proteus': 0.1.8
   '@preact/signals': 1.1.4_preact@10.15.1
   '@rollup/plugin-commonjs': 25.0.2_rollup@3.26.0
   '@rollup/plugin-node-resolve': 15.1.0_rollup@3.26.0
@@ -22,8 +22,8 @@ devDependencies:
 
 packages:
 
-  /@axel669/proteus/0.1.7:
-    resolution: {integrity: sha512-wKZ9gPzBbh2eMcHro9bS/ef0hkuVqUSJU6l0gkja/BTTDaWbnsvCQY1jCyJb4lGeRDx03rFdCrxkzMVO+EU6FA==}
+  /@axel669/proteus/0.1.8:
+    resolution: {integrity: sha512-2BVOTbBSLzRz0cPMvXaQNNr2nN5vr0P/Un5JTCetnA73tJ0imdH5qUO9Ek+x/kAZvuVzCfq+vynS1L/dH8g3WA==}
     dev: true
 
   /@jridgewell/gen-mapping/0.3.3:
