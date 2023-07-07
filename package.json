@@ -1,10 +1,11 @@
 {
-  "name": "lib.aml",
-  "version": "1.0.0",
+  "name": "@axel669/aml",
+  "version": "0.1.1",
   "description": "",
-  "main": "index.js",
+  "main": "lib/proteus.mjs",
+  "type": "module",
   "scripts": {
-    "build": "rollup -c config/rollup.config.mjs"
+    "build": "node build.mjs"
   },
   "keywords": [],
   "author": "",
@@ -18,5 +19,13 @@
     "fs-jetpack": "^5.1.0",
     "preact": "^10.15.1",
     "rollup": "^3.26.0"
+  },
+  "files": [
+    "lib/"
+  ],
+  "exports": {
+    ".": "lib/proteus.mjs",
+    "./tag": "lib/tag.mjs",
+    "./preact": "lib/preact.mjs"
   }
 }
