@@ -1,36 +1,63 @@
 import parser from "../lib/parser.mjs"
+import tag from "../lib/tag.mjs"
 
-const n = 10
-const f = () => {}
-
-const res = () => tag`
-    :label
-    .ws-x @toggle @flat
-        :input
-        .type checkbox
-        / more value
-        .checked ${n}
-        .onChange () => items.toggle(index)
-
-        :div
-        .ws-x $text p[4px]
-        .style flex-grow: 1;
-            item.text
-            testing ${[1, 2, 3, 4]}
-
-    :${f} [.a "hi" / .b ${100}] some content
-`
-// console.dir(res(), { depth: null })
-
-// console.time("repeat")
-// for (let i = 0; i < 10000; i += 1) {
-//     res()
+// const build = (type, props, ...children) => {
+//     return { type, props, children }
 // }
-// console.timeEnd("repeat")
+// const aml = `
+//     :script
+//         const code = true
+//         console.log("hi, ", code)
 
-// console.log(
-//     JSON.stringify(res, null, 2).replace(
-//         /"\\u0000(\d+)\\u0000"/g,
-//         (_, n) => `values[${n}]`
-//     )
+//         const done = false
+
+//     :label
+//     .ws-x @toggle @flat
+//         :input
+//         .type checkbox
+//         / more value
+//         .checked
+//         .onChange () => items.toggle(index)
+
+//         :div
+//         .ws-x $text p[4px]
+//         .style flex-grow: 1;
+//             item.text
+//             testing
+
+//     :div [.a "hi" / .b "100"] some content
+// `
+
+// console.dir(
+//     parser.parse(aml, { build }),
+//     { depth: null }
 // )
+
+console.dir(
+    tag`
+        :script
+            const code = true
+            console.log("hi, ", code)
+
+            const done = false
+
+        :label
+        .ws-x @toggle @flat
+            :input
+            .type checkbox
+            / more value
+            .checked
+            .onChange () => items.toggle(index)
+            .f ${() => { }}
+            ...${{a: 10}}
+
+            :div
+            .ws-x $text p[4px]
+            .style flex-grow: 1;
+                item.text
+                testing
+
+        :div [.a "hi" / .b "100"] some content ${-1}
+    `,
+    { depth: null }
+)

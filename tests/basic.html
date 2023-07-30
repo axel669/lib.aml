@@ -7,7 +7,7 @@
     <body ws-x="@app theme[tron]">
         <script src="https://cdn.jsdelivr.net/npm/@axel669/windstorm@0.1.17/dist/browser.js"></script>
         <script type="module">
-            // import { html, render, useState } from "https://unpkg.com/htm/preact/standalone.module.js"
+            import { html, render, useState } from "https://unpkg.com/htm/preact/standalone.module.js"
 
             // const f = (props) => {
             //     const [n, set] = useState(0)
@@ -26,12 +26,18 @@
             //     document.body
             // )
 
-            import htm from "https://unpkg.com/htm?module"
-            import aml, { cache } from "./lib/tag.mjs"
+            // import htm from "https://unpkg.com/htm?module"
+            import vhtml from "https://esm.sh/vhtml"
+            import aml from "./lib/tag.mjs"
+            import { h } from "https://esm.sh/preact"
+            import * as _wut from "https://esm.sh/@preact/signals"
 
-            const html = htm.bind(
-                (type, props, ...children) => ({ type, props, children })
-            )
+            // console.log(vhtml)
+
+            // const html = htm.bind(
+            //     (type, props, ...children) => ({ type, props, children })
+            // )
+            // const vhtm = htm.bind(vhtml)
 
             // const c = new Map()
             // function t(parts, ...values) {
@@ -61,44 +67,77 @@
             // const f = [...cache.entries()][0][1]
             // console.log(f.toString())
 
-            for (let i = 0; i < 10; i += 1) {
-                const lim = 100000
+            const atml = aml.use(h)
+            // for (let i = 0; i < 10; i += 1) {
+            //     const lim = 100000
 
-                console.log("-".repeat(30))
+            //     console.log("-".repeat(30))
 
-                console.time("aml")
-                for (let i = 0; i < lim; i += 1) {
-                    // f()
-                    aml`:div [.a ${i}] Test: ${i}`
-                }
-                console.timeEnd("aml")
+            //     console.time("aml")
+            //     for (let i = 0; i < lim; i += 1) {
+            //         // f()
+            //         atml`:div [.a ${i}] Test: ${i}`
+            //     }
+            //     console.timeEnd("aml")
 
-                console.time("htm")
-                for (let i = 0; i < lim; i += 1) {
-                    html`<div a=${i}>Test: ${i}<//>`
-                }
-                console.timeEnd("htm")
-            }
+            //     console.time("htm")
+            //     for (let i = 0; i < lim; i += 1) {
+            //         html`<div a=${i}>Test: ${i}<//>`
+            //     }
+            //     console.timeEnd("htm")
+            // }
 
-            // const wat = (...args) => console.log(args)
             // console.log(
-            //     aml`
-            //         :label
-            //         .ws-x @toggle @flat
-            //             :input
-            //             .type checkbox
-            //             / more value
-            //             .checked item.done
-            //             .onChange () => items.toggle(index)
-
-            //             :div
-            //             .ws-x $text p[4px]
-            //             .style flex-grow: 1;
-            //                 item.text
-
-            //         :div some content
-            //     `
+            //     vhtm`
+            //         <script>
+            //             const t = 0
+            //             const t2 = 1
+            //         <//>
+            //         <div>
+            //             hi
+            //             test
+            //         <//>
+            //     `.join("\n")
             // )
+
+            // console.log(
+            //     aml.use(vhtml)`
+            //         :script
+            //             const t = 0
+            //             const t2 = 1
+
+            //         :div
+            //             hi
+            //             test lines
+            //             :div
+            //                 indented?
+            //     `.join("\n")
+            // )
+
+            const wat = (...args) => console.log(args)
+            const blep = { a: 10 }
+            render(
+                atml`
+                    :script
+                        const t = "test"
+                    :label
+                    .ws-x @control
+                        :input
+                        .type checkbox
+                        / more value
+                        .checked item.done
+                        .onChange ${wat}
+                        ...${blep}
+
+                        :div
+                        .ws-x $text p[4px]
+                        .style flex-grow: 1;
+                            item.text
+
+                    :div some content
+                `,
+                document.body
+            )
         </script>
     </body>
 </html>

@@ -2,10 +2,11 @@
   "name": "@axel669/aml",
   "version": "0.1.1",
   "description": "",
-  "main": "lib/proteus.mjs",
+  "main": "lib/tag.mjs",
   "type": "module",
   "scripts": {
-    "build": "node build.mjs"
+    "build": "node build.mjs",
+    "build-test": "rollup -c config/rollup.config.mjs"
   },
   "keywords": [],
   "author": "",
@@ -24,8 +25,7 @@
     "lib/"
   ],
   "exports": {
-    ".": "lib/proteus.mjs",
-    "./tag": "lib/tag.mjs",
-    "./preact": "lib/preact.mjs"
+    ".": "lib/tag.mjs",
+    "./parse": "lib/parse.mjs"
   }
 }
