@@ -1,6 +1,6 @@
 {
   "name": "@axel669/aml",
-  "version": "0.1.1",
+  "version": "0.1.2-preview",
   "description": "",
   "main": "lib/tag.mjs",
   "type": "module",
