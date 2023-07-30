@@ -5,4 +5,4 @@ const fileContent = `// Generated Proteus output
 ${aml.module}
 `
 
-fs.write("lib/proteus.mjs", fileContent)
+fs.write("lib/parser-compiled.mjs", fileContent)

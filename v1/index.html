@@ -1,0 +1,270 @@
+<!doctype html>
+<html>
+    <head>
+        <meta name="viewport" content="initial-scale=1,maximum-scale=5,minimum-scale=1,width=device-width">
+        <title>Testing</title>
+    </head>
+    <body ws-x="@app theme[tron]">
+        <script src="https://cdn.jsdelivr.net/npm/@axel669/windstorm@0.1.17/dist/browser.js"></script>
+        <script type="module">
+            // import htm from "https://unpkg.com/htm?module"
+
+            // const html = htm.bind(
+            //     function h(type, props, ...children) {
+            //         return { type, props, children }
+            //     }
+            // )
+            // const F = () => {}
+
+            // console.log(
+            //     html`
+            //         <div>
+            //             Test
+            //             with lines
+            //         </div>
+            //         <${F} f="test" />
+            //         <div on:click=${F} test="1 2 ${3}" n=${3} />
+            //     `
+            // )
+
+            import { Parser, Rule } from "https://cdn.jsdelivr.net/npm/@axel669/proteus@0.1.6/browser/module.mjs"
+
+            import amlProcess from "./aml-process.mjs"
+            import { render } from "./aml-render.mjs"
+
+            const aml = Parser(
+                { start: Rule.tags },
+                Rule`tags`(
+                    Rule.$repeat(
+                        0,
+                        Rule.emptyLine,
+                    ),
+                    { lines: Rule.$repeat(
+                        0,
+                        Rule.$or(
+                            [Rule.scriptTag],
+                            [Rule.tag],
+                            [Rule.attr],
+                            [Rule.textLine],
+                            [Rule.emptyLine],
+                        )
+                    ) },
+                    /\s*/,
+                    ({ lines }, state) => {
+                        console.log(state)
+                        return lines.map(ln => ln[0])
+                    }
+                ),
+                Rule`emptyLine`(
+                    /[\t ]*\r?\n/
+                ),
+                Rule`scriptTag`(
+                    { indent: Rule.indentState },
+                    "[script]",
+                    { props: Rule.inlineAttr },
+                    Rule.eol,
+                    { lines: Rule.$repeat(
+                        0,
+                        ([line], state) => {
+                            if (line.length === 1) {
+                                return true
+                            }
+                            return line[0].length > state.indent
+                        },
+                        Rule.$or(
+                            [Rule.emptyLine],
+                            [Rule.indent, /[^\r\n]+/, Rule.eol]
+                        )
+                    ) },
+                    ({ indent, tag, props, lines }, state) => {
+                        // console.log(lines)
+                        return {
+                            __type: "tag",
+                            type: "script",
+                            indent,
+                            props,
+                            blep: state.indent,
+                            children: lines.map(
+                                line => ({
+                                    children: [line[0].join("").trimEnd()],
+                                    __type: "text",
+                                })
+                            )
+                        }
+                    }
+                ),
+                Rule`tag`(
+                    { indent: Rule.indent },
+                    "[",
+                    { tag: Rule.tagName },
+                    "]",
+                    { props: Rule.inlineAttr },
+                    Rule.eol,
+                    ({ indent, tag, props }) => {
+                        return {
+                            __type: "tag",
+                            type: tag,
+                            indent,
+                            props,
+                            children: []
+                        }
+                    }
+                ),
+                Rule`indent`(
+                    /[\t ]*/,
+                    ([ indent ]) => indent
+                ),
+                Rule`indentState`(
+                    /[\t ]*/,
+                    ([ indent ], state) => {
+                        state.indent = indent.length
+                        return indent
+                    }
+                ),
+                Rule`tagName`(
+                    /[a-zA-Z][^\]\s]*/,
+                    ([ tagName ]) => tagName
+                ),
+                Rule`eol`(
+                    /\r?\n/
+                ),
+                Rule`inlineAttr`(
+                    Rule.$repeat(
+                        0,
+                        Rule.space,
+                        ":",
+                        Rule.attrName,
+                        Rule.space,
+                        Rule.string
+                    ),
+                    /[ \t]*/,
+                    ([ pairs = [] ]) => Object.fromEntries(
+                        pairs.map(
+                            ([, , name, , value]) => [name, value]
+                        )
+                    )
+                ),
+                Rule`attr`(
+                    { indent: Rule.indent },
+                    ":",
+                    { name: Rule.attrName },
+                    { value: Rule.$opt(
+                        Rule.space,
+                        Rule.$or(
+                            [Rule.string],
+                            [Rule.attrValue],
+                        )
+                    ) },
+                    Rule.eol,
+                    ({ indent, name, value }) => {
+                        const attrValue = value?.[1] ?? ""
+                        return ({
+                            __type: "attr",
+                            name,
+                            value: attrValue,
+                            indent
+                        })
+                    }
+                ),
+                Rule`space`(
+                    /[\t ]+/
+                ),
+                Rule`attrName`(
+                    Rule.$or(
+                        [ Rule.string ],
+                        [ /[^\s]+/ ],
+                    ),
+                    ([ name ]) => name
+                ),
+                Rule`attrValue`(
+                    /[^\r\n]+/,
+                    ([ value ]) => JSON.parse(`"${value}"`)
+                ),
+                Rule`string`(
+                    /"(\\"|[^"])*"/,
+                    ([str]) => JSON.parse(str)
+                ),
+                Rule`textLine`(
+                    Rule.indent,
+                    Rule.$repeat(
+                        1,
+                        Rule.$or(
+                            // [Rule.tagEscape],
+                            [/(\\\[|[^\[\r\n\0])+/],
+                        )
+                    ),
+                    Rule.eol,
+                    ([ indent, text ]) => ({
+                        __type: "text",
+                        children: text.map(
+                            item => Array.isArray(item) ? item.join("") : item
+                        ),
+                        indent
+                    })
+                ),
+            )
+            const input = `
+                [input]
+                :type "text"
+                :bind:value
+
+                [script]
+                    [testing]
+                    wat
+
+                [div]
+                    Hello, {value}
+            `
+            const input2 = `
+                [html]
+                    [head]
+                    [body]
+                    :ws-x @app theme[tron]
+                        [script]
+                        :src https://cdn.jsdelivr.net/npm/@axel669/windstorm@0.1.17/dist/browser.js
+
+                        [script]
+                            console.log(1, 2, 3)
+                            [1, 2, 3]
+
+                        [test] :class "test"
+                        :ws-x r[0px] \\u03c0
+                        :ws-x2 "    r[0px]\\\""
+                            more stuff
+
+                                tab again?
+                        [wat]
+                        free text
+
+                        [pre🍤]
+                        :test?
+                            this is a test
+                            of some stuff
+
+                        [C̷̙̲̝͖ͭ̏ͥͮ͟Oͮ͏̮̪̝͍M̲̖͊̒ͪͩͬ̚̚͜Ȇ̴̟̟͙̞ͩ͌͝S̨̥̫͎̭ͯ̿̔̀ͅ]
+                            content?
+            `
+            // console.log(
+            //     /[\t ]*\r?\n/y.exec(input)
+            // )
+            // const f = () => {}
+            // console.log(
+            //     aml.parse(input)
+                // aml.parse(`
+                //     [test]
+                //     :active
+                //     :ws-x theme[tron]
+                //     [wat]
+                //         [testing]
+                //             blep
+                // `)
+            // )
+            const exprs = aml.parse(input2)
+            console.log(exprs)
+            const nodes = amlProcess(exprs)
+            console.log(
+                render(nodes)
+            )
+        </script>
+    </body>
+</html>

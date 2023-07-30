@@ -1,3 +1,4 @@
 port: 45067
 sources:
 - dir: "."
+- dir: tests

@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+    <head>
+        <meta name="viewport" content="initial-scale=1,maximum-scale=5,minimum-scale=1,width=device-width">
+        <title>AML Browser Tests</title>
+    </head>
+    <body ws-x="@app theme[tron]">
+        <script src="https://cdn.jsdelivr.net/npm/@axel669/windstorm@0.1.17/dist/browser.js"></script>
+        <script type="module">
+            // import { html, render, useState } from "https://unpkg.com/htm/preact/standalone.module.js"
+
+            // const f = (props) => {
+            //     const [n, set] = useState(0)
+            //     console.log("calc")
+            //     return html`
+            //         <div>
+            //             value: ${n}
+            //         <//>
+            //         <button onClick=${() => set(n + 1)}>
+            //             Clicky
+            //         <//>
+            //     `
+            // }
+            // render(
+            //     html`<${f} />`,
+            //     document.body
+            // )
+
+            import htm from "https://unpkg.com/htm?module"
+            import aml, { cache } from "./lib/tag.mjs"
+
+            const html = htm.bind(
+                (type, props, ...children) => ({ type, props, children })
+            )
+
+            // const c = new Map()
+            // function t(parts, ...values) {
+            //     // console.log(this)
+            //     // console.log(c, parts)
+            //     console.log(c.has(parts))
+            //     c.set(parts, 0)
+            // }
+            // const f = () => t`test`
+
+            // f()
+            // f()
+            // f()
+            // f()
+            // f()
+            // t`test${0}`
+            // t`test${0}`
+
+            // let i = 0
+            // console.log(aml`:div [.a "1"] Test: ${i}`)
+            // console.log(aml`:div [.a "1"] Test: ${i}`)
+            // console.log(aml`:div [.a "1"] Test: ${i}`)
+
+            // aml`:div [.a "1"] Test`
+            // aml`:div [.a "1"] ${0} Test`
+            // console.log([...cache.values()].join("\n"))
+            // const f = [...cache.entries()][0][1]
+            // console.log(f.toString())
+
+            for (let i = 0; i < 10; i += 1) {
+                const lim = 100000
+
+                console.log("-".repeat(30))
+
+                console.time("aml")
+                for (let i = 0; i < lim; i += 1) {
+                    // f()
+                    aml`:div [.a ${i}] Test: ${i}`
+                }
+                console.timeEnd("aml")
+
+                console.time("htm")
+                for (let i = 0; i < lim; i += 1) {
+                    html`<div a=${i}>Test: ${i}<//>`
+                }
+                console.timeEnd("htm")
+            }
+
+            // const wat = (...args) => console.log(args)
+            // console.log(
+            //     aml`
+            //         :label
+            //         .ws-x @toggle @flat
+            //             :input
+            //             .type checkbox
+            //             / more value
+            //             .checked item.done
+            //             .onChange () => items.toggle(index)
+
+            //             :div
+            //             .ws-x $text p[4px]
+            //             .style flex-grow: 1;
+            //                 item.text
+
+            //         :div some content
+            //     `
+            // )
+        </script>
+    </body>
+</html>

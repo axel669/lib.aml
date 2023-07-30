@@ -1,0 +1,122 @@
+<!doctype html>
+<html>
+    <head>
+        <meta name="viewport" content="initial-scale=1,maximum-scale=5,minimum-scale=1,width=device-width">
+        <title>AML</title>
+    </head>
+    <body ws-x="@app theme[tron]">
+        <script src="https://cdn.jsdelivr.net/npm/@axel669/windstorm@0.1.17/dist/browser.js"></script>
+        <script type="module">
+            // import aml from "./dist/browser.min.mjs"
+
+            // console.log(
+            //     aml`
+            //         [div]
+            //             ${"blep"}
+            //     `
+            // )
+            import update from "https://esm.sh/@axel669/immutable-update/esm"
+
+            import toHTML from "./lib/to-html.mjs"
+            import parse from "./dist/browser.min.mjs"
+
+            import { render, aml, signal, effect } from "./dist/preact.min.mjs"
+
+            const items = signal([])
+            items.add = (item) => items.value = update(
+                items.value,
+                { $push: item }
+            )
+            items.toggle = (index) => items.value = update(
+                items.value,
+                { [`${index}.done.$set`]: items.value[index].done === false }
+            )
+            items.clearDone = () => items.value = items.value.filter(
+                item => item.done === false
+            )
+            const nextItem = signal("")
+
+            effect(
+                () => console.log(items.value)
+            )
+
+            const App = () => {
+                const addItem = () => {
+                    items.add({ text: nextItem.value, done: false })
+                    nextItem.value = ""
+                }
+                const update = (evt) => nextItem.value = evt.target.value
+
+                const lines = items.value.map(
+                    (item, index) => aml`
+                        [label]
+                        :ws-x @toggle @flat
+                            [input]
+                            :type checkbox
+                            :checked ${item.done}
+                            :onChange ${() => items.toggle(index)}
+
+                            [div]
+                            :ws-x $text p[4px]
+                            :style flex-grow: 1;
+                                ${item.text}
+                    `
+                )
+
+                return aml`
+                    [ws-flex]
+                    :ws-x w[360px]
+                        [label]
+                        :ws-x @control $color[primary]
+                            [span]
+                            :ws-x $text
+                                New Item
+
+                            [input]
+                            :type text
+                            :value ${nextItem.value}
+                            :onInput ${update}
+
+                            [button]
+                            :ws-x @flat $color[primary] slot[end]
+                            :onClick ${addItem}
+                                Add
+
+                        [button]
+                        :ws-x @outline $color[warning]
+                        :onClick ${items.clearDone}
+                            Clear Finished Items
+
+                        ${lines}
+                `
+            }
+            render(
+                aml`[${App}]`,
+                document.body
+            )
+
+            {
+                const items = parse`
+                    [script]
+                        let online = null
+
+                        const f = () => console.log("wat")
+                        const tag = "div"
+
+                    [button]
+                    :on:click {f}
+                        Click!
+
+                    [svelte:window]
+                    :bind:online
+
+                    [svelte:element]
+                    :this div
+                        Online: {online}
+                `
+                console.log(items)
+                console.log(toHTML(items))
+            }
+        </script>
+    </body>
+</html>

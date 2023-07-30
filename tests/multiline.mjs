@@ -1,4 +1,3 @@
-// Generated Proteus output
 const none = Symbol("none")
 
 let state = null
@@ -18,7 +17,22 @@ const consumeRegex = (pattern, input, pos) => {
     }
     return [pattern.lastIndex, match?.[0] ?? null]
 }
+let count = {}
+let lastc = null
+const inc = (name) => {
+    if (lastc !== name) {
+        lastc = name
+        console.log("parsing", name)
+    }
+    const c = count[name] ?? 0
+    count[name] = c + 1
+    if (c === 100) {
+        throw new Error(`broke in ${name}`)
+    }
+}
 const parse_eof = (input, pos) => {
+    inc("eof")
+    console.log(pos, input.length)
     if (pos === input.length) {
         return [pos, null]
     }
@@ -48,6 +62,7 @@ const linePosition = (input, pos) => {
     }
 }
 const $parse_or2 = (input, pos) => {
+    inc("or2")
     let loc = pos
     let match = null
 
@@ -60,12 +75,10 @@ const $parse_or2 = (input, pos) => {
     ;[loc, match] = parse_textLine(input, loc)
     if (match !== none) { return [loc, match] }
 
-    ;[loc, match] = parse_emptyLine(input, loc)
-    if (match !== none) { return [loc, match] }
-
     return [pos, none]
 }
 const $parse_repeat1 = (input, pos, parentResults) => {
+    inc("repeat1")
     const results = []
     let loc = pos
     let match = null
@@ -89,6 +102,7 @@ const $parse_repeat1 = (input, pos, parentResults) => {
 const $condition4 = ([ prop ], _, { indent }) =>
 prop.indent.length === indent.length
 const $parse_repeat3 = (input, pos, parentResults) => {
+    inc("repeat3")
     const results = []
     let loc = pos
     let match = null
@@ -113,23 +127,12 @@ const $parse_repeat3 = (input, pos, parentResults) => {
     }
     return [loc, results]
 }
-const $parse_or6 = (input, pos) => {
-    let loc = pos
-    let match = null
-
-    ;[loc, match] = parse_textLine(input, loc)
-    if (match !== none) { return [loc, match] }
-
-    ;[loc, match] = parse_emptyLine(input, loc)
-    if (match !== none) { return [loc, match] }
-
-    return [pos, none]
-}
-const $condition7 = ([line], _, { indent }) => (
+const $condition6 = ([line], _, { indent }) => (
 line.text.length === 0
 || line.indent.length > indent.length
 )
 const $parse_repeat5 = (input, pos, parentResults) => {
+    inc("repeat5")
     const results = []
     let loc = pos
     let match = null
@@ -137,12 +140,12 @@ const $parse_repeat5 = (input, pos, parentResults) => {
     while (true) {
         const startLoc = loc
         const partial = []
-        ;[loc, match] = $parse_or6(input, loc)
+        ;[loc, match] = parse_textLine(input, loc)
         if (match === none) { loc = startLoc; location(pos); break }
         partial.push(match)
 
         const partialValue = partial
-        if ($condition7(partialValue, state, parentResults) !== true) {
+        if ($condition6(partialValue, state, parentResults) !== true) {
             loc = startLoc
             break
         }
@@ -154,7 +157,8 @@ const $parse_repeat5 = (input, pos, parentResults) => {
     }
     return [loc, results]
 }
-const $parse_or8 = (input, pos) => {
+const $parse_or7 = (input, pos) => {
+    inc("or7")
     let loc = pos
     let match = null
 
@@ -166,21 +170,10 @@ const $parse_or8 = (input, pos) => {
 
     return [pos, none]
 }
-const $parse_or10 = (input, pos) => {
-    let loc = pos
-    let match = null
-
-    ;[loc, match] = parse_attr(input, loc)
-    if (match !== none) { return [loc, match] }
-
-    ;[loc, match] = parse_restAttr(input, loc)
-    if (match !== none) { return [loc, match] }
-
-    return [pos, none]
-}
-const $condition11 = ([ prop ], _, { indent }) =>
+const $condition9 = ([ prop ], _, { indent }) =>
 prop.indent.length === indent.length
-const $parse_repeat9 = (input, pos, parentResults) => {
+const $parse_repeat8 = (input, pos, parentResults) => {
+    inc("repeat8")
     const results = []
     let loc = pos
     let match = null
@@ -188,12 +181,12 @@ const $parse_repeat9 = (input, pos, parentResults) => {
     while (true) {
         const startLoc = loc
         const partial = []
-        ;[loc, match] = $parse_or10(input, loc)
+        ;[loc, match] = parse_attr(input, loc)
         if (match === none) { loc = startLoc; location(pos); break }
         partial.push(match)
 
         const partialValue = partial
-        if ($condition11(partialValue, state, parentResults) !== true) {
+        if ($condition9(partialValue, state, parentResults) !== true) {
             loc = startLoc
             break
         }
@@ -205,7 +198,8 @@ const $parse_repeat9 = (input, pos, parentResults) => {
     }
     return [loc, results]
 }
-const $parse_or13 = (input, pos) => {
+const $parse_or11 = (input, pos) => {
+    inc("or11")
     let loc = pos
     let match = null
 
@@ -215,16 +209,14 @@ const $parse_or13 = (input, pos) => {
     ;[loc, match] = parse_textLine(input, loc)
     if (match !== none) { return [loc, match] }
 
-    ;[loc, match] = parse_emptyLine(input, loc)
-    if (match !== none) { return [loc, match] }
-
     return [pos, none]
 }
-const $condition14 = ([item], _, { indent }) => (
+const $condition12 = ([item], _, { indent }) => (
 item.text?.length === 0
 || item.indent.length > indent.length
 )
-const $parse_repeat12 = (input, pos, parentResults) => {
+const $parse_repeat10 = (input, pos, parentResults) => {
+    inc("repeat10")
     const results = []
     let loc = pos
     let match = null
@@ -232,12 +224,12 @@ const $parse_repeat12 = (input, pos, parentResults) => {
     while (true) {
         const startLoc = loc
         const partial = []
-        ;[loc, match] = $parse_or13(input, loc)
+        ;[loc, match] = $parse_or11(input, loc)
         if (match === none) { loc = startLoc; location(pos); break }
         partial.push(match)
 
         const partialValue = partial
-        if ($condition14(partialValue, state, parentResults) !== true) {
+        if ($condition12(partialValue, state, parentResults) !== true) {
             loc = startLoc
             break
         }
@@ -249,7 +241,8 @@ const $parse_repeat12 = (input, pos, parentResults) => {
     }
     return [loc, results]
 }
-const $parse_or16 = (input, pos) => {
+const $parse_or14 = (input, pos) => {
+    inc("or14")
     let loc = pos
     let match = null
 
@@ -261,7 +254,8 @@ const $parse_or16 = (input, pos) => {
 
     return [pos, none]
 }
-const $parse_repeat15 = (input, pos, parentResults) => {
+const $parse_repeat13 = (input, pos, parentResults) => {
+    inc("repeat13")
     const results = []
     let loc = pos
     let match = null
@@ -269,7 +263,7 @@ const $parse_repeat15 = (input, pos, parentResults) => {
     while (true) {
         const startLoc = loc
         const partial = []
-        ;[loc, match] = $parse_or16(input, loc)
+        ;[loc, match] = $parse_or14(input, loc)
         if (match === none) { loc = startLoc; location(pos); break }
         partial.push(match)
 
@@ -277,12 +271,13 @@ const $parse_repeat15 = (input, pos, parentResults) => {
 
         results.push(partialValue)
     }
-    if (results.length < 1) {
+    if (results.length < 0) {
         return [pos, none]
     }
     return [loc, results]
 }
-const $parse_or17 = (input, pos) => {
+const $parse_or15 = (input, pos) => {
+    inc("or15")
     let loc = pos
     let match = null
 
@@ -294,7 +289,8 @@ const $parse_or17 = (input, pos) => {
 
     return [pos, none]
 }
-const $parse_repeat19 = (input, pos, parentResults) => {
+const $parse_repeat17 = (input, pos, parentResults) => {
+    inc("repeat17")
     const results = []
     let loc = pos
     let match = null
@@ -327,7 +323,8 @@ const $parse_repeat19 = (input, pos, parentResults) => {
     }
     return [loc, results]
 }
-const $parse_opt18 = (input, pos) => {
+const $parse_opt16 = (input, pos) => {
+    inc("opt16")
     const results = []
     let loc = pos
     let match = null
@@ -340,13 +337,14 @@ const $parse_opt18 = (input, pos) => {
     results.push(match)
     if (match === none) { location(pos); return [pos, null] }
 
-    ;[loc, match] = $parse_repeat19(input, loc, results)
+    ;[loc, match] = $parse_repeat17(input, loc, results)
     results.push(match)
     if (match === none) { location(pos); return [pos, null] }
 
     return [loc, results]
 }
-const $parse_or20 = (input, pos) => {
+const $parse_or18 = (input, pos) => {
+    inc("or18")
     let loc = pos
     let match = null
 
@@ -361,7 +359,8 @@ const $parse_or20 = (input, pos) => {
 
     return [pos, none]
 }
-const $parse_or22 = (input, pos) => {
+const $parse_or20 = (input, pos) => {
+    inc("or20")
     let loc = pos
     let match = null
 
@@ -373,7 +372,8 @@ const $parse_or22 = (input, pos) => {
 
     return [pos, none]
 }
-const $parse_repeat21 = (input, pos, parentResults) => {
+const $parse_repeat19 = (input, pos, parentResults) => {
+    inc("repeat19")
     const results = []
     let loc = pos
     let match = null
@@ -381,7 +381,7 @@ const $parse_repeat21 = (input, pos, parentResults) => {
     while (true) {
         const startLoc = loc
         const partial = []
-        ;[loc, match] = $parse_or22(input, loc)
+        ;[loc, match] = $parse_or20(input, loc)
         if (match === none) { loc = startLoc; location(pos); break }
         partial.push(match)
 
@@ -399,6 +399,7 @@ const action_contents = ({ entries }) => entries.map(
 entry => entry[0]
 )
 const parse_contents = (input, pos) => {
+    inc("contents")
     const results = []
     let loc = pos
     let match = null
@@ -431,6 +432,7 @@ const action_textTag = ({ indent, type, children, props }) => {
     }
 }
 const parse_textTag = (input, pos) => {
+    inc("textTag")
     const results = []
     let loc = pos
     let match = null
@@ -477,8 +479,8 @@ const action_tag = ({ indent, type, children, props }) => {
         type,
         props: Object.fromEntries(
         props.map(
-        prop => prop[0].pairs
-        ).flat(1)
+        prop => prop[0].pair
+        )
         ),
         children: children.map(
         child => child[0]
@@ -486,6 +488,7 @@ const action_tag = ({ indent, type, children, props }) => {
     }
 }
 const parse_tag = (input, pos) => {
+    inc("tag")
     const results = []
     let loc = pos
     let match = null
@@ -501,7 +504,7 @@ const parse_tag = (input, pos) => {
     if (match === none) { location(pos); return [pos, none] }
     results.push(match)
 
-    ;[loc, match] = $parse_or8(input, loc)
+    ;[loc, match] = $parse_or7(input, loc)
     if (match === none) { location(pos); return [pos, none] }
     results.push(match)
     results.type = match
@@ -514,12 +517,12 @@ const parse_tag = (input, pos) => {
     if (match === none) { location(pos); return [pos, none] }
     results.push(match)
 
-    ;[loc, match] = $parse_repeat9(input, loc, results)
+    ;[loc, match] = $parse_repeat8(input, loc, results)
     if (match === none) { location(pos); return [pos, none] }
     results.push(match)
     results.props = match
 
-    ;[loc, match] = $parse_repeat12(input, loc, results)
+    ;[loc, match] = $parse_repeat10(input, loc, results)
     if (match === none) { location(pos); return [pos, none] }
     results.push(match)
     results.children = match
@@ -528,6 +531,7 @@ const parse_tag = (input, pos) => {
 }
 const action_textLine = ({ indent, text }) => ({ indent, text: text.flat(), type: "_text" })
 const parse_textLine = (input, pos) => {
+    inc("textLine")
     const results = []
     let loc = pos
     let match = null
@@ -539,7 +543,7 @@ const parse_textLine = (input, pos) => {
     results.push(match)
     results.indent = match
 
-    ;[loc, match] = $parse_repeat15(input, loc, results)
+    ;[loc, match] = $parse_repeat13(input, loc, results)
     if (match === none) { location(pos); return [pos, none] }
     results.push(match)
     results.text = match
@@ -552,6 +556,7 @@ const parse_textLine = (input, pos) => {
 }
 const action_indent = ([ indent ]) => indent
 const parse_indent = (input, pos) => {
+    inc("indent")
     const results = []
     let loc = pos
     let match = null
@@ -566,6 +571,7 @@ const parse_indent = (input, pos) => {
 }
 const action_eol = i => i
 const parse_eol = (input, pos) => {
+    inc("eol")
     const results = []
     let loc = pos
     let match = null
@@ -578,33 +584,16 @@ const parse_eol = (input, pos) => {
 
     return [loc, action_eol(results, state, opt)]
 }
-const action_emptyLine = ([ indent ]) => ({ indent, text: [] })
-const parse_emptyLine = (input, pos) => {
-    const results = []
-    let loc = pos
-    let match = null
-
-    currentRule = "emptyLine"
-
-    ;[loc, match] = parse_indent(input, loc)
-    if (match === none) { location(pos); return [pos, none] }
-    results.push(match)
-
-    ;[loc, match] = parse_eol(input, loc)
-    if (match === none) { location(pos); return [pos, none] }
-    results.push(match)
-
-    return [loc, action_emptyLine(results, state, opt)]
-}
 const action_eoc = i => i
 const parse_eoc = (input, pos) => {
+    inc("eoc")
     const results = []
     let loc = pos
     let match = null
 
     currentRule = "eoc"
 
-    ;[loc, match] = $parse_or17(input, loc)
+    ;[loc, match] = $parse_or15(input, loc)
     if (match === none) { location(pos); return [pos, none] }
     results.push(match)
 
@@ -612,6 +601,7 @@ const parse_eoc = (input, pos) => {
 }
 const action_insert = ({ index }, _, { values }) => values[parseInt(index)]
 const parse_insert = (input, pos) => {
+    inc("insert")
     const results = []
     let loc = pos
     let match = null
@@ -633,54 +623,16 @@ const parse_insert = (input, pos) => {
 
     return [loc, action_insert(results, state, opt)]
 }
-const action_restAttr = ({ indent, value }) => ({ indent, pairs: Object.entries(value) })
-const parse_restAttr = (input, pos) => {
-    const results = []
-    let loc = pos
-    let match = null
-
-    currentRule = "restAttr"
-
-    ;[loc, match] = parse_indent(input, loc)
-    if (match === none) { location(pos); return [pos, none] }
-    results.push(match)
-    results.indent = match
-
-    ;[loc, match] = consumeString(":...", input, loc)
-    if (match === none) { location(pos); return [pos, none] }
-    results.push(match)
-
-    ;[loc, match] = parse_insert(input, loc)
-    if (match === none) { location(pos); return [pos, none] }
-    results.push(match)
-    results.value = match
-
-    ;[loc, match] = parse_eoc(input, loc)
-    if (match === none) { location(pos); return [pos, none] }
-    results.push(match)
-
-    return [loc, action_restAttr(results, state, opt)]
-}
 const action_attr = ({ indent, name, value }) => {
-    const attrParts =
-    (value === null)
-    ? [true]
-    : [
-    value[1],
-    ...value[2].map(
-    part => part[3]
-    )
-    ]
-    const attrValue =
-    (attrParts.length === 1)
-    ? attrParts[0]
-    : attrParts.join(" ")
+    console.log(value)
+    const attrValue = value?.[1] ?? ""
     return {
         indent,
-        pairs: [ [name, attrValue] ]
+        pair: [name, attrValue]
     }
 }
 const parse_attr = (input, pos) => {
+    inc("attr")
     const results = []
     let loc = pos
     let match = null
@@ -701,7 +653,7 @@ const parse_attr = (input, pos) => {
     results.push(match)
     results.name = match
 
-    ;[loc, match] = $parse_opt18(input, loc)
+    ;[loc, match] = $parse_opt16(input, loc)
     if (match === none) { location(pos); return [pos, none] }
     results.push(match)
     results.value = match
@@ -714,6 +666,7 @@ const parse_attr = (input, pos) => {
 }
 const action_space = i => i
 const parse_space = (input, pos) => {
+    inc("space")
     const results = []
     let loc = pos
     let match = null
@@ -728,13 +681,14 @@ const parse_space = (input, pos) => {
 }
 const action_attrName = ([name]) => name
 const parse_attrName = (input, pos) => {
+    inc("attrName")
     const results = []
     let loc = pos
     let match = null
 
     currentRule = "attrName"
 
-    ;[loc, match] = $parse_or20(input, loc)
+    ;[loc, match] = $parse_or18(input, loc)
     if (match === none) { location(pos); return [pos, none] }
     results.push(match)
 
@@ -747,13 +701,14 @@ const action_attrValue = ([ value ]) => {
     return value.map(item => item[0]).join("")
 }
 const parse_attrValue = (input, pos) => {
+    inc("attrValue")
     const results = []
     let loc = pos
     let match = null
 
     currentRule = "attrValue"
 
-    ;[loc, match] = $parse_repeat21(input, loc, results)
+    ;[loc, match] = $parse_repeat19(input, loc, results)
     if (match === none) { location(pos); return [pos, none] }
     results.push(match)
 
@@ -761,6 +716,7 @@ const parse_attrValue = (input, pos) => {
 }
 const action_string = ([str]) => JSON.parse(str)
 const parse_string = (input, pos) => {
+    inc("string")
     const results = []
     let loc = pos
     let match = null
